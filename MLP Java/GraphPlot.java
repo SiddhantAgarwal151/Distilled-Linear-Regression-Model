@@ -12,12 +12,13 @@ import javafx.stage.Stage;
 public class GraphPlot extends Application {
 
     private static double[][] data;
-    private static MLP mlp;
+    private static DecisionTree tree;
 
-    public static void setData(double[][] inputData, MLP trainedMLP) {
+    public static void setData(double[][] inputData, DecisionTree trainedTree) {
         data = inputData;
-        mlp = trainedMLP;
+        tree = trainedTree;
     }
+    
 
     @Override
     public void start(Stage stage) {
@@ -39,8 +40,7 @@ public class GraphPlot extends Application {
 
         for (double[] point : data) {
             double[] input = {point[0], point[1]};
-            double[] output = mlp.forward(input);
-            int predictedClass = output[0] > output[1] ? 0 : 1;
+            int predictedClass = tree.predict(input);  // Replace this with decision tree prediction
 
             if (predictedClass == 0) {
                 class0Series.getData().add(new XYChart.Data<>(point[0], point[1]));
@@ -48,6 +48,7 @@ public class GraphPlot extends Application {
                 class1Series.getData().add(new XYChart.Data<>(point[0], point[1]));
             }
         }
+
 
         scatterChart.getData().addAll(class0Series, class1Series);
 
@@ -62,8 +63,7 @@ public class GraphPlot extends Application {
         for (double x = xMin; x <= xMax; x += step) {
             for (double y = yMin; y <= yMax; y += step) {
                 double[] input = {x, y};
-                double[] output = mlp.forward(input);
-                int predictedClass = output[0] > output[1] ? 0 : 1;
+                int predictedClass = tree.predict(input);
 
                 if (predictedClass == 0) {
                     gc.setFill(Color.LIGHTBLUE);

@@ -13,16 +13,18 @@ public class Main {
         System.arraycopy(normalizedData, 0, trainData, 0, splitIndex);
         System.arraycopy(normalizedData, splitIndex, testData, 0, testData.length);
 
-        // Train MLP
-        MLP mlp = new MLP(2, 4, 2); // 2 input features, 4 hidden neurons, 2 outputs
-        for (double[] sample : trainData) {
-            double[] input = {sample[0], sample[1]};
-            double[] output = mlp.forward(input);
-            // Training logic to be added
+        // Create labels for training (same as in the DataGenerator)
+        int[] labels = new int[trainData.length];
+        for (int i = 0; i < trainData.length; i++) {
+            labels[i] = trainData[i][0] + trainData[i][1] > 0 ? 1 : 0; // Simple boundary
         }
 
+        // Train decision tree
+        DecisionTree tree = new DecisionTree();
+        tree.fit(trainData, labels);
+
         // Visualize
-        GraphPlot.setData(testData, mlp); // Pass data and trained model to the visualization
+        GraphPlot.setData(testData, tree); // Pass data and trained tree model to the visualization
         javafx.application.Application.launch(GraphPlot.class); // Launch JavaFX
     }
 }
